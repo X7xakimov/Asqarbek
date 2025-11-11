@@ -88,7 +88,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  background: #74aad6;
   border: 2px solid rgba(255,255,255,0.1);
 }
 
@@ -107,11 +107,11 @@ body {
   padding: 14px 18px;
   border-radius: 40px;
   text-decoration: none;
-  color: black;
+  color: white;
   font-weight: 600;
   background: rgba(255,255,255,0.05);
   transition: 0.2s;
-  background-color: black;
+  background-color: #74aad6;
 }
 
 .link:hover {
@@ -158,4 +158,7 @@ body {
   padding: 20px;
   text-align: center;
   color: white;
+}
+.icon-btn:hover {
+background-color: #3474a8;
 }
