@@ -51,7 +51,6 @@ body {
   background: rgba(255,255,255,0.1);
   border-radius: 18px;
   padding: 28px 22px 36px;
-  backdrop-filter: blur(10px);
   box-shadow: 0 8px 30px rgba(0,0,0,0.6);
   display: flex;
   flex-direction: column;
@@ -131,6 +130,8 @@ body {
   margin-top: 10px;
 }
 
+
+/* 🔹 Tugmalar uchun “oyna blur” effekti */
 .link {
   display: inline-flex;
   align-items: center;
@@ -140,11 +141,18 @@ body {
   text-decoration: none;
   color: white;
   font-weight: 600;
-  background-color: #b5c0c9;
-  transition: 0.2s;
+
+  /* 💎 Shaffof oyna effekti */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  transition: 0.3s;
 }
 
 .link:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+  background: rgba(255, 255, 255, 0.25);
 }
