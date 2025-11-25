@@ -1,101 +1,140 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Asqarbek – Mnemonika Rekordlari</title>
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Poppins", sans-serif;
-            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=60') center/cover no-repeat;
-            backdrop-filter: blur(8px);
-            animation: fadeIn 1.2s ease;
-        }
-
-        @keyframes fadeIn {
-            from {opacity: 0;}
-            to {opacity: 1;}
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 25px;
-            padding: 30px;
-            box-shadow: 0 0 40px rgba(0,0,0,0.35);
-            backdrop-filter: blur(20px);
-            text-align: center;
-        }
-
-        h1 {
-            margin: 0;
-            color: #fff;
-            font-size: 32px;
-            font-weight: 700;
-            text-shadow: 0 0 15px rgba(255,255,255,0.4);
-        }
-
-        p {
-            margin-top: 10px;
-            font-size: 18px;
-            color: black;
-        }
-
-        .record-box {
-            margin-top: 25px;
-            padding: 25px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.18);
-            box-shadow: inset 0 0 30px rgba(255,255,255,0.2), 0 0 25px rgba(0,0,0,0.25);
-            color: #fff;
-        }
-
-        .record-number {
-            font-size: 50px;
-            font-weight: 800;
-            margin-bottom: 5px;
-            text-shadow: 0 0 25px #00eaff;
-        }
-
-        .back-btn {
-            display: block;
-            margin-top: 35px;
-            padding: 14px 0;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.25);
-            color: #fff;
-            font-size: 20px;
-            font-weight: 600;
-            text-decoration: none;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            transition: 0.3s;
-        }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.45);
-            transform: scale(1.05);
-        }
-    </style>
+<meta charset="UTF-8" />
+<title>Mnemonika Major – Mashq</title>
+<style>
+body { background:#111; color:#fff; font-family:Arial; padding:20px; }
+.box { background:#222; padding:20px; border-radius:10px; }
+button { padding:10px 20px; margin:5px; border:none; border-radius:8px; font-size:16px; }
+.green { background:#4CAF50; }
+.red { background:#b82c2c; }
+select, textarea { width:100%; padding:10px; margin:10px 0; border-radius:8px; }
+#numbers { font-size:24px; text-align:center; letter-spacing:3px; margin:15px 0; }
+#timer { font-size:40px; text-align:center; margin:10px 0; }
+#status { font-size:18px; text-align:center; margin:10px 0; color:#ffcc00; }
+</style>
 </head>
-
 <body>
 
-    <div class="container">
-        <h1>Mnemonika Rekordlari</h1>
-        <p>Asqarbek Xakimov – Xotira bo‘yicha shaxsiy natijalar</p>
+<div class="box">
+<h2>Mnemonika — Major mashqi (40 Hz)</h2>
 
-        <div class="record-box">
-            <div class="record-number">108 ta</div>
-            <div style="font-size:20px;">5 daqiqada eslab qolingan raqamlar</div>
-        </div>
+<label>Vaqt:</label>
+<select id="timeSelect">
+<option value="60">1 daqiqa</option>
+<option value="180">3 daqiqa</option>
+<option value="300">5 daqiqa</option>
+<option value="600">10 daqiqa</option>
+</select>
 
-        <a class="back-btn" href="index.html">← Bosh sahifaga qaytish</a>
-    </div>
+<label>Raqamlar soni:</label>
+<select id="countSelect">
+<option value="20">20 ta</option>
+<option value="50">50 ta</option>
+<option value="100">100 ta</option>
+<option value="150">150 ta</option>
+<option value="200">200 ta</option>
+</select>
+
+<button class="green" onclick="startSession()">Start</button>
+<button class="red" onclick="stopSession()">To‘xtatish</button>
+<button onclick="generateNumbers()">Yangi ketma-ketlik</button>
+
+<div id="timer">00:00</div>
+<div id="numbers">— — — — —</div>
+<div id="status"></div>
+
+<p>Vaqt tugagach yoki tayyor bo‘lsang yoz:</p>
+<textarea id="userInput" placeholder="Bu yerga o‘z eslagan raqamlaringni yoz..."></textarea>
+<button class="green" onclick="checkNumbers()">Tekshirish</button>
+<button class="red" onclick="clearAll()">Tozalash</button>
+
+<div id="result"></div>
+</div>
+
+<audio id="hz40" loop>
+<source src="40hz.mp3" type="audio/mpeg" />
+</audio>
+
+<script>
+let generated = [];
+let timerInterval;
+let timeLeft = 0;
+let sessionActive = false;
+
+function generateNumbers() {
+    let count = parseInt(document.getElementById("countSelect").value);
+    generated = [];
+    for (let i = 0; i < count; i++) {
+        let num = Math.floor(Math.random() * 90) + 10;
+        generated.push(num);
+    }
+    document.getElementById("numbers").innerText = generated.join(" ");
+    document.getElementById("status").innerText = "";
+}
+
+function startSession() {
+    generateNumbers();
+    timeLeft = parseInt(document.getElementById("timeSelect").value);
+    document.getElementById("hz40").play();
+    sessionActive = true;
+
+    timerInterval = setInterval(() => {
+        let m = Math.floor(timeLeft / 60).toString().padStart(2, "0");
+        let s = (timeLeft % 60).toString().padStart(2, "0");
+        document.getElementById("timer").innerText = `${m}:${s}`;
+
+        if (timeLeft <= 0) {
+            stopSession(true);
+        }
+
+        timeLeft--;
+    }, 1000);
+}
+
+function stopSession(timeout = false) {
+    clearInterval(timerInterval);
+    document.getElementById("hz40").pause();
+
+    if(timeout) {
+        document.getElementById("numbers").innerText = "— — — Sessiya tugadi — — —";
+        document.getElementById("status").innerText = "";
+        alert("⏰ Vaqt tugadi!");
+        sessionActive = false;
+    } else {
+        if(sessionActive) {
+            document.getElementById("status").innerText = "⏹ Sessiya to‘xtatildi!";
+            sessionActive = false;
+        }
+    }
+}
+
+function checkNumbers() {
+    let input = document.getElementById("userInput").value.replace(/\s+/g, "");
+    let split = input.match(/.{1,2}/g) || [];
+    let resultHTML = "";
+    let correct = 0;
+    for (let i = 0; i < generated.length; i++) {
+        let userVal = split[i] || "__";
+        let realVal = generated[i];
+        if (userVal == realVal) {
+            correct++;
+            resultHTML += `<p style='color:#4CAF50'>[${i+1}] ✔️ ${userVal} | to‘g‘ri: ${realVal}</p>`;
+        } else {
+            resultHTML += `<p style='color:#ff4a4a'>[${i+1}] ❌ ${userVal} | to‘g‘ri: ${realVal}</p>`;
+        }
+    }
+    resultHTML += `<h3>Jami to‘g‘ri: ${correct} / ${generated.length}</h3>`;
+    document.getElementById("result").innerHTML = resultHTML;
+}
+
+function clearAll() {
+    document.getElementById("userInput").value = "";
+    document.getElementById("result").innerHTML = "";
+    document.getElementById("status").innerText = "";
+}
+</script>
 
 </body>
 </html>
